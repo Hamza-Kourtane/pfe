@@ -1,0 +1,278 @@
+﻿/* Scoped page wrapper instead of global html/body so this page's
+   background/overflow no longer leaks into the rest of the app */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+  overflow: auto;
+  font-family: 'Poppins', sans-serif;
+  background-color: rgba(9, 57, 88, 0.733);
+}
+
+/* Container holds everything (Left Visuals + Right Form)
+   min-height instead of a fixed height: the login form (2 fields) and
+   the register form (5 fields) share this file, so the card needs to
+   grow with its content instead of clipping/overlapping longer forms */
+.auth-container {
+  display: flex;
+  min-height: 580px;
+  width: min(1240px, 100%);
+  max-width: 1240px;
+  background-color: #B3BEC6;
+  overflow: hidden;
+  margin: 0 auto;
+  border-radius: 18px;
+}
+
+/* The side with the blobs/image */
+.reg-left {
+  flex: 1.5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reg-left img {
+  width: 80%; 
+  max-width: 600px;
+  height: auto;
+}
+
+/* The white card side */
+.reg-right {
+  width: 44%;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 36px 32px;
+  border-radius: 30px 0 0 0px;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.05);
+}
+
+.form {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+h1 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* From Uiverse.io by dovatgabriel */ 
+.group {
+ display: flex;
+ flex-direction: column;
+ align-items: flex-start;
+ margin-bottom: 16px;
+ width: 100%;
+}
+
+label {
+ color: #515151;
+ font-size: 14px;
+ font-weight: 600;
+ margin-bottom: 8px;
+}
+
+.input {
+  font-size: 16px;
+  padding: 12px 14px;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.input:focus {
+ outline: none;
+ border-color: #5264AE;
+ box-shadow: 0 0 0 4px rgba(82, 100, 174, 0.12);
+}
+
+.bar,
+.highlight {
+  display: none;
+}
+
+@keyframes inputHighlighter {
+ from {
+  background: #5264AE;
+ }
+
+ to {
+  width: 0;
+  background: transparent;
+ }
+}
+
+/* Main Black Button */
+.main-btn {
+  margin-top: 24px;
+  padding: 1.3em 3em;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #080808;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+}
+
+.main-btn:hover{
+  background-color: #23c483;
+  box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+  color: #fff;
+  transform: translateY(-7px);
+}
+
+.main-btn:active {
+  transform: translateY(-1px);
+}
+.reg-login-text {
+  margin-top: 16px;
+  margin-right: 0;
+  color: #7C838A;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  text-align: center;
+}
+
+.reg-text-link {
+  background: none;
+  border: none;
+  color: #376A78;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 600;
+  padding: 0;
+}
+
+.reg-status-message {
+  border-radius: 12px;
+  font-size: 14px;
+  margin-top: 16px;
+  padding: 12px 14px;
+}
+
+.reg-status-message.success {
+  background-color: #E8F5E9;
+  color: #1B5E20;
+}
+
+.reg-status-message.error {
+  background-color: #FDECEC;
+  color: #B3261E;
+}
+
+.reg-google-btn {
+  margin-top: 24px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.reg-google-btn button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border: 1px solid #D1D5DB;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  color: #7C838A;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.reg-google-btn button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.reg-google-btn img {
+  width: 45px;
+}
+
+/* Password show/hide toggle (previously unstyled here — it was
+   accidentally picking up styles from DoctorRegister.css) */
+.reg-password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.reg-password-input-wrapper input {
+  padding-right: 68px;
+}
+
+.reg-toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #376A78;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.reg-toggle-password:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 900px) {
+  .auth-page {
+    overflow: auto;
+  }
+
+  .auth-container {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .reg-left {
+    min-height: 240px;
+    padding: 24px;
+  }
+
+  .reg-left img {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .reg-right {
+    width: 100%;
+    border-radius: 24px 24px 0 0;
+    box-sizing: border-box;
+    padding: 24px;
+  }
+
+  .reg-login-text {
+    margin-right: 0;
+    text-align: center;
+  }
+}
