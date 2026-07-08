@@ -1,0 +1,772 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+html,
+body,
+#root {
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.home-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  color: #1f2937;
+  font-family: "Poppins", sans-serif;
+}
+
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+  position: relative;
+  z-index: 30;
+  padding: 15px 60px;
+  background: #f5f5f5;
+}
+
+.header-left .logo {
+  font-weight: bold;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+/* LOGO */
+.logo {
+  margin-left: 50px;
+  width: 132px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+/* CENTER TEXT */
+.nav {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  align-items: center;
+  transform: translateX(28px);
+  margin-left: 80px;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.nav span {
+  position: relative;
+  cursor: pointer;
+  color: #1F2937;
+  transition: color 0.3s ease;
+}
+.nav span::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+
+  width: 0%;
+  height: 2px;
+
+  background: #A8DF8E;
+  border-radius: 10px;
+
+  transform: translateX(-50%);
+  transition: width 0.3s ease;
+}
+.nav span:hover::after {
+  width: 100%;
+}
+.nav span.active::after {
+  width: 100%;
+}
+
+/* RIGHT BUTTONS */
+.create-btn {
+  font-family: "Ubuntu", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  padding: 10px 25px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  background-color: #1F2937;
+  border-radius: 30px;
+  transition: background-color 0.6s ease, color 0.6s ease, opacity 0.6s ease;
+}
+.create-btn:hover {
+  background-color: #ffffff;
+  opacity: 0.8;
+  color: #000000;
+}
+/* login button */
+.login-btn {
+  position: relative;
+  margin: auto;
+  padding: 12px 18px;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.login-btn:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  border-radius: 50px;
+  background: #b1dae7;
+  width: 45px;
+  height: 45px;
+  transition: all 0.3s ease;
+}
+
+.login-btn span {
+  position: relative;
+  font-family: "Ubuntu", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #234567;
+}
+
+.login-btn svg {
+  position: relative;
+  top: 0;
+  margin-left: 10px;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke: #234567;
+  stroke-width: 2;
+  transform: translateX(-5px);
+  transition: all 0.3s ease;
+}
+
+.login-btn:hover:before {
+  width: 100%;
+  background: #b1dae7;
+}
+
+.login-btn:hover svg {
+  transform: translateX(0);
+}
+
+.login-btn:active {
+  transform: scale(0.95);
+}
+
+.menu-btn {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: none;
+  border-radius: 50%;
+  background: #1F2937;
+  color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+.menu-btn:hover {
+  background: #111827;
+  transform: translateY(-1px);
+}
+
+.menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  border: none;
+  background: rgba(0, 0, 0, 0.34);
+  cursor: pointer;
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 90;
+  width: min(340px, 86vw);
+  height: 100vh;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(18px);
+  box-shadow: -18px 0 50px rgba(15, 23, 42, 0.22);
+  transform: translateX(100%);
+  transition: transform 0.32s ease;
+}
+
+.side-menu.open {
+  transform: translateX(0);
+}
+
+.side-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  color: #111827;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.side-menu-close {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: #1F2937;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.side-menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.side-menu-nav button {
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #1F2937;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+}
+
+.side-menu-nav button:hover,
+.side-menu-nav button.active {
+  border-color: #1F2937;
+  background: #1F2937;
+  color: #ffffff;
+  transform: translateX(-3px);
+}
+
+/* HERO */
+main {
+  padding: 30px 36px 60px;
+}
+
+.hero-section {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 1520px;
+  min-height: 500px;
+  margin: 0 auto;
+  padding: 52px 70px 150px;
+  overflow: hidden;
+  border: 1px solid rgba(160, 231, 255, 0.38);
+  border-radius: 34px;
+  background: #082033;
+  box-shadow: 0 34px 90px rgba(8, 32, 51, 0.24);
+  transform: translateY(0);
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+  font-family: "Plus Jakarta Sans", "Poppins", sans-serif;
+}
+
+.hero-video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1120px;
+  text-align: center;
+  padding: 38px 42px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 28px;
+  background: rgba(5, 22, 35, 0.12);
+  backdrop-filter: blur(3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 24px 70px rgba(3, 16, 27, 0.14);
+}
+
+.hero-specialties {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: 2;
+  width: min(100%, 1340px);
+  min-height: 118px;
+  padding: 24px 52px 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+  border-radius: 300px 300px 0 0;
+  transform: translateX(-50%);
+}
+
+.specialties-title {
+  margin: 0 0 14px;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.specialties-list {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(100px, 1fr));
+  gap: 16px;
+  align-items: start;
+  direction: rtl;
+}
+
+.specialty-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #111827;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  direction: ltr;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+
+.specialty-item:hover {
+  transform: scale(1.05);
+}
+
+.specialty-icon {
+  width: 70px;
+  height: 50px;
+  display: block;
+  object-fit: contain;
+  transition: transform 0.25s ease;
+}
+
+.specialty-item:hover .specialty-icon {
+  transform: scale(1.08);
+}
+
+.hero-content h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 76px;
+  line-height: 1.02;
+  font-weight: 800;
+  letter-spacing: 0;
+
+} 
+
+.hero-text {
+  margin: 18px 0 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.6;
+  text-shadow: 0 8px 24px rgba(3, 16, 27, 0.32);
+}
+
+
+
+.promo-banner-section {
+  width: min(100%, 1430px);
+  margin: 72px auto 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.promo-banner-section img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* DETAILS APPOINTMENT */
+.appointment-details-section {
+  width: min(100%, 1300px);
+  margin: 84px auto 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  font-family: "Plus Jakarta Sans", "Poppins", sans-serif;
+}
+
+.appointment-details-section h2 {
+  margin: 0;
+  color: #292d32;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: capitalize;
+}
+
+.appointment-info-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px solid #f1f1f1;
+  border-radius: 24px;
+}
+
+.appointment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.appointment-row h3 {
+  margin: 0;
+  color: #292d32;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: capitalize;
+}
+
+.appointment-row p {
+  margin: 2px 0 0;
+  color: #555b6c;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-transform: capitalize;
+}
+
+.appointment-icon {
+  flex: 0 0 auto;
+  color: #555b6c;
+  stroke-width: 1.8;
+}
+
+.appointment-divider {
+  width: 100%;
+  height: 1px;
+  background: #f1f1f1;
+}
+
+.doctor-appointment-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 88px;
+  padding: 16px;
+  background: #000000;
+  border-radius: 24px;
+  box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.doctor-photo {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #f2f2f2;
+  color: #292d32;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.doctor-card-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.doctor-card-text h3 {
+  margin: 0 0 4px;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.doctor-card-text p {
+  margin: 0;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.cancel-appointment-btn {
+  min-width: 110px;
+  height: 34px;
+  border: none;
+  border-radius: 999px;
+  background: #ff3b3b;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+.cancel-appointment-btn:hover {
+  background: #ff5555;
+  transform: translateY(-1px);
+}
+
+.verify-icon {
+  flex: 0 0 auto;
+  color: #ffffff;
+  fill: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .header {
+    gap: 10px;
+    padding: 16px 20px;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    gap: 18px;
+    transform: none;
+  }
+
+  main {
+    padding: 24px 20px 48px;
+  }
+
+  .hero-section {
+    flex-direction: column;
+    min-height: auto;
+    padding: 44px 24px 24px;
+    border-radius: 26px;
+  }
+
+  .hero-content {
+    padding: 30px 22px;
+  }
+
+  .hero-content h1 {
+    font-size: 42px;
+  }
+
+  .promo-banner-section {
+    margin-top: 44px;
+  }
+
+  .appointment-details-section {
+    margin-top: 48px;
+    padding: 16px;
+  }
+
+  .appointment-details-section h2 {
+    font-size: 30px;
+  }
+
+  .appointment-row h3 {
+    font-size: 24px;
+  }
+
+  .doctor-appointment-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .cancel-appointment-btn {
+    order: 3;
+    width: 100%;
+  }
+
+  .hero-specialties {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    width: 100%;
+    min-height: auto;
+    margin-top: 22px;
+    padding: 24px 14px 14px;
+    border-radius: 70px 70px 0 0;
+  }
+
+  .specialties-title {
+    margin-bottom: 16px;
+  }
+
+  .specialties-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 12px;
+  }
+
+  .specialty-item {
+    font-size: 12px;
+    white-space: normal;
+  }
+
+  .specialty-icon {
+    width: 64px;
+    height: 46px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 16px 12px;
+  }
+
+  .header-right {
+    width: auto;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .create-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .login-btn {
+    padding: 10px 8px;
+  }
+
+  .login-btn::before {
+    width: 36px;
+    height: 36px;
+  }
+
+  .login-btn span {
+    font-size: 14px;
+  }
+
+  .login-btn svg {
+    margin-left: 6px;
+  }
+
+  .logo {
+    width: 106px;
+    height: 40px;
+    margin-left: 0;
+  }
+
+  .menu-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .nav {
+    gap: 12px;
+    font-size: 12px;
+  }
+
+  main {
+    padding: 16px 12px 36px;
+  }
+
+  .hero-section {
+    padding: 28px 12px 16px;
+    border-radius: 22px;
+  }
+
+  .hero-content {
+    padding: 24px 14px;
+    border-radius: 22px;
+  }
+
+  .hero-content h1 {
+    font-size: 34px;
+    line-height: 1.08;
+  }
+
+  .hero-text {
+    margin-top: 12px;
+    font-size: 14px;
+  }
+
+  .hero-specialties {
+    margin-top: 20px;
+    padding: 22px 10px 12px;
+    border-radius: 54px 54px 0 0;
+  }
+
+  .specialties-title {
+    margin-bottom: 18px;
+    font-size: 15px;
+  }
+
+  .specialties-list {
+    gap: 14px 8px;
+  }
+
+  .specialty-icon {
+    width: 58px;
+    height: 42px;
+  }
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+  align-items: center;
+}

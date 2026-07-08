@@ -1,0 +1,317 @@
+    .home-search {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    gap: 22px;
+    width: 100%;
+    max-width: 1020px;
+    margin: 34px auto 0;
+    padding: 16px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(219, 249, 255, 0.42);
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(22px);
+    padding-right: 4px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.28),
+        0 22px 60px rgba(3, 16, 27, 0.26);
+    }
+
+    .search-field input,
+    .search-field select {
+    width: 100%;
+    height: 42px;
+    border: 1px solid rgba(219, 249, 255, 0.384);
+    border-radius: 12px;
+    background: rgba(0, 52, 77, 0.267);
+    color: #ffffff;
+    font-size: 16px;
+    font-family: inherit;
+    font-weight: 600;
+    outline: none;
+    padding: 0 14px;
+    backdrop-filter: blur(50px);
+    }
+
+    .specialist-field {
+    position: relative;
+    }
+
+    .specialist-field select {
+    appearance: none;
+    cursor: pointer;
+    padding-right: 42px;
+    }
+
+    .specialist-field::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    width: 9px;
+    height: 9px;
+    border-right: 2px solid rgba(234, 251, 255, 0.9);
+    border-bottom: 2px solid rgba(234, 251, 255, 0.9);
+    pointer-events: none;
+    transform: translateY(-65%) rotate(45deg);
+    transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .specialist-field:hover::after {
+    border-color: #8ff3ff;
+    transform: translateY(-45%) rotate(45deg);
+    }
+
+    .search-field input::placeholder {
+    color: rgb(255, 255, 255);
+    }
+
+    .search-field input:focus,
+    .search-field select:focus {
+    border-color: #8ff3ff;
+    box-shadow: 0 0 0 3px rgba(143, 243, 255, 0.18);
+    }
+
+    .search-field select option {
+    background: #0f172a;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    }
+
+    .specialist-field select option:hover,
+    .specialist-field select option:checked {
+    background: #1f2937;
+    color: #8ff3ff;
+    }
+
+    .search-btn {
+    position: relative;
+    margin-left: 20px;
+    z-index: 0;
+    height: 42px;
+    width: 290px;
+    padding: 0 22px;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    color: #000000;
+    cursor: pointer;
+    font-family: ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 42px;
+    outline: 0;
+    overflow: hidden;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: color 0.5s ease;
+    border-radius: 10px;
+    }
+
+    .search-btn::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #000000;
+    transition: width 0.5s ease;
+    }
+
+    .search-btn::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: -1;
+    width: 100%;
+    height: 0;
+    background-color: #000000;
+    transition: height 0.4s ease;
+    }
+
+    .search-btn:hover::before {
+    width: 100%;
+    }
+
+    .search-btn:hover::after {
+    height: 100%;
+    transition-delay: 0.4s;
+    }
+
+    .search-btn:hover {
+    color: #ffffff;
+    transition-delay: 0.5s;
+    }
+
+    .search-btn span {
+    position: relative;
+    z-index: 1;
+    }
+
+    @media (max-width: 900px) {
+    .home-search {
+        grid-template-columns: 1fr;
+        max-width: 520px;
+        border-radius: 24px;
+        padding: 18px;
+        gap: 14px;
+    }
+
+    .home-search .search-btn {
+        width: 100%;
+        margin-left: 0;
+    }
+    }
+
+    @media (max-width: 480px) {
+    .home-search {
+        margin-top: 22px;
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .home-search .search-field input,
+    .home-search .search-field select,
+    .home-search .search-btn {
+        height: 40px;
+    }
+    }
+
+/* Doctor Search - Simple Clean CSS */
+/* Doctor Search - Glass layout + normal inputs */
+.doctor-search {
+    
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  max-width: 900px;
+  padding: 14px 16px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Input + Select NORMAL style */
+.doctor-search .search-field input,
+.doctor-search .search-field select {
+  width: 310px;
+  height: 42px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #333;
+  font-size: 15px;
+  padding: 0 12px;
+  outline: none;
+}
+
+/* Focus effect */
+.doctor-search .search-field input:focus,
+.doctor-search .search-field select:focus {
+  border-color: #5DA2B4;
+  box-shadow: 0 0 0 2px rgba(102, 199, 216, 0.596);
+}
+
+/* Select arrow */
+.doctor-search .specialist-field {
+  position: relative;
+}
+
+.doctor-search .specialist-field select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 36px;
+}
+
+.doctor-search .specialist-field::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #333;
+  border-bottom: 2px solid #333;
+  transform: translateY(-60%) rotate(45deg);
+}
+
+/* Button (keep your animation but cleaner) */
+.doctor-search .search-btn {
+position: relative;
+    
+    z-index: 0;
+    height: 42px;
+    width: 300px;
+    padding: 0 22px;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    color: #000000;
+    cursor: pointer;
+    font-family: 'Poppins', system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 42px;
+    outline: 0;
+    overflow: hidden;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: color 0.5s ease;
+    border-radius: 10px;
+        border: #000000 solid 1px;
+
+}
+
+.doctor-search  .search-btn::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #000000;
+    transition: width 0.5s ease;
+    }
+
+    .doctor-search  .search-btn::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: -1;
+    width: 100%;
+    height: 0;
+    background-color: #000000;
+    transition: height 0.4s ease;
+    }
+
+    .doctor-search  .search-btn:hover::before {
+    width: 100%;
+    }
+
+    .doctor-search  .search-btn:hover::after {
+    height: 100%;
+    transition-delay: 0.4s;
+    }
+
+    .doctor-search  .search-btn:hover {
+    color: #ffffff;
+    transition-delay: 0.5s;
+    }
+
+    .doctor-search  .search-btn span {
+    position: relative;
+    z-index: 1;
+    }
+/* Responsive */
+@media (max-width: 900px) {
+  .doctor-search {
+    grid-template-columns: 1fr;
+    border-radius: 20px;
+    padding: 16px;
+  }
+}
