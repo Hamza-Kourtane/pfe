@@ -32,11 +32,10 @@ function AIChatbot() {
     }
   }, [messages, isLoading]);
 
-  // Opens doctor details page when a doctor card is clicked
+  // Takes the user to the doctor list page filtered by specialty
   const handleDoctorClick = (doctor) => {
-    // Save doctor data so DoctorDetails can use it
-    sessionStorage.setItem("selectedDoctor", JSON.stringify(doctor));
-    navigate("/doctor");
+    const specialty = doctor.specialty || "";
+    navigate(`/doctorlist?specialist=${encodeURIComponent(specialty)}`);
   };
 
   // Runs when the Send button is clicked
