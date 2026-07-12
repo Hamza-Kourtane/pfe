@@ -1,92 +1,106 @@
-// Import Express
 import express from "express";
-import dotenv from "dotenv";
 
-// Import Gemini
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-dotenv.config();
-
-// Create a router
 const router = express.Router();
 
-// Create Gemini using the API key from .env
-const geminiApiKey = process.env.GEMINI_API_KEY;
-console.log("Gemini Key:", geminiApiKey ? "loaded" : "missing");
-const genAI = geminiApiKey ? new GoogleGenerativeAI(geminiApiKey) : null;
-
-const getFallbackReply = (message) => {
+// Simple keyword-based replies - no API key needed
+// This makes the chatbot work immediately without any setup
+const getReply = (message) => {
   const text = message.toLowerCase();
 
-  if (text.includes("pain") || text.includes("headache") || text.includes("fever") || text.includes("cough")) {
-    return "I can help with general wellness advice, but I cannot diagnose you. If your symptoms are severe, sudden, or getting worse, please contact a doctor or visit urgent care.";
+  // Greetings
+  if (text.includes("hello") || text.includes("hi ") || text.includes("hey")) {
+    return "Hello! How can I help you today?";
   }
 
-  if (text.includes("medicine") || text.includes("medication")) {
-    return "I can share general health guidance, but I cannot prescribe medication. Please speak with a licensed healthcare professional for treatment advice.";
+  // Pain / headache
+  if (text.includes("headache") || text.includes("migraine")) {
+    return "Headaches can have many causes. Make sure you're drinking enough water and resting. If the pain is severe or lasts a long time, please see a doctor.";
   }
 
-  return "Thanks for sharing that. I’m here to offer general health guidance and encourage you to contact a doctor for medical advice if needed.";
+  // Fever
+  if (text.includes("fever") || text.includes("temperature") || text.includes("hot")) {
+    return "If you have a fever, rest and drink plenty of fluids. If your temperature is very high or lasts more than 3 days, visit a doctor.";
+  }
+
+  // Cough / cold / flu
+  if (text.includes("cough") || text.includes("cold") || text.includes("flu") || text.includes("sneeze")) {
+    return "Rest, warm drinks, and plenty of sleep can help with cold symptoms. If you have a high fever or trouble breathing, see a doctor.";
+  }
+
+  // Stomach / nausea
+  if (text.includes("stomach") || text.includes("nausea") || text.includes("vomit") || text.includes("diarrhea")) {
+    return "Stomach issues often pass on their own. Drink small sips of water and eat light food. See a doctor if symptoms are severe or last more than 2 days.";
+  }
+
+  // Chest / heart
+  if (text.includes("chest") || text.includes("heart") || text.includes("breathing")) {
+    return "Chest pain or trouble breathing can be serious. Please see a doctor or go to the emergency room as soon as possible.";
+  }
+
+  // Back pain
+  if (text.includes("back") || text.includes("spine") || text.includes("neck")) {
+    return "Back pain is common. Try gentle stretching and avoid heavy lifting. If the pain does not improve after a few days, see a specialist.";
+  }
+
+  // Skin / allergy
+  if (text.includes("skin") || text.includes("rash") || text.includes("allergy") || text.includes("itch")) {
+    return "Skin rashes can be caused by many things. Avoid scratching and try a cold compress. If it spreads or gets worse, see a dermatologist.";
+  }
+
+  // Sleep
+  if (text.includes("sleep") || text.includes("insomnia") || text.includes("tired")) {
+    return "Good sleep is important for health. Try to keep a regular sleep schedule and avoid screens before bed. If you still have trouble, talk to a doctor.";
+  }
+
+  // Appointments
+  if (text.includes("appointment") || text.includes("book") || text.includes("doctor") && text.includes("find")) {
+    return "You can search for a doctor using the search form on our homepage. Select a specialty and location to find available doctors.";
+  }
+
+  // Medicine
+  if (text.includes("medicine") || text.includes("medication") || text.includes("drug") || text.includes("pill")) {
+    return "I cannot prescribe or recommend specific medicines. Please consult a doctor for the right treatment.";
+  }
+
+  // Emergency
+  if (text.includes("emergency") || text.includes("urgent") || text.includes("accident") || text.includes("ambulance")) {
+    return "If this is an emergency, please call emergency services immediately. Do not wait for an online response.";
+  }
+
+  // Age / children
+  if (text.includes("baby") || text.includes("child") || text.includes("kid") || text.includes("infant")) {
+    return "Children's health concerns should always be checked by a pediatrician. Please make an appointment with a children's doctor.";
+  }
+
+  // Thanks
+  if (text.includes("thank") || text.includes("thanks")) {
+    return "You're welcome! I'm here to help. Feel free to ask if you have more questions.";
+  }
+
+  // Default fallback
+  return "Thank you for sharing. I can give general health guidance, but for medical advice please contact a doctor. Is there anything specific you'd like to ask about?";
 };
 
-// POST /ai/chat
+// POST /ai/chat - receives a message and returns a reply
 router.post("/chat", async (req, res) => {
   try {
-
-    // Get the user's message sent from React
     const { message } = req.body;
 
-    if (!geminiApiKey || !genAI) {
-      return res.status(500).json({
-        error: "Gemini API key is not configured."
-      });
+    if (!message) {
+      return res.json({ reply: "Please type a message." });
     }
 
-    // Choose the Gemini model
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash"
-    });
+    // Generate a reply based on keywords
+    const reply = getReply(message);
 
-    // Tell Gemini how it should behave
-    const prompt = `
-You are Doctori AI.
+    // Small delay to feel more natural (optional)
+    await new Promise((r) => setTimeout(r, 300));
 
-You are a helpful medical assistant.
-
-Rules:
-
-- Never diagnose diseases.
-- Never prescribe medicine.
-- Ask follow-up questions naturally.
-- Be friendly.
-- Keep answers short.
-- If you think the patient should see a doctor,
-recommend only a medical specialty.
-
-Patient:
-
-${message}
-`;
-
-    // Send the prompt to Gemini
-    const result = await model.generateContent(prompt);
-
-    // Get Gemini's answer
-    const reply = result.response.text();
-
-    // Send it back to React
-    res.json({
-      reply
-    });
+    res.json({ reply });
 
   } catch (error) {
-
-    console.error("Gemini request failed:", error?.message || error);
-
-    res.json({
-      reply: getFallbackReply(message)
-    });
-
+    console.error("Chat error:", error);
+    res.json({ reply: "Sorry, I couldn't respond right now. Please try again." });
   }
 });
 
