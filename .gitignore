@@ -24,3 +24,6 @@ backend/.env
 *.njsproj
 *.sln
 *.sw?
+node_modules/
+.env
+dist/
