@@ -26,6 +26,7 @@ const Verification = () => {
           clinic_address: doctor.clinic_address,
           license_number: doctor.license_number,
           status: doctor.status,
+          image: doctor.image || null,
         };
         localStorage.setItem('doctor', JSON.stringify(mappedDoctor));
       }

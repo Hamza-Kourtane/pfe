@@ -63,6 +63,7 @@ const Login = ({ onSwitchToRegister }) => {
           clinic_address: data.doctor.clinic_address,
           license_number: data.doctor.license_number,
           status: data.doctor.status,
+            image: data.doctor.image || null,
         };
         localStorage.setItem('doctor', JSON.stringify(mappedDoctor));
         // redirect doctors to dashboard

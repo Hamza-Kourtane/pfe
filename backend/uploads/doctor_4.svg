@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <rect width="256" height="256" rx="32" fill="#fef3c7"/>
+  <circle cx="128" cy="104" r="56" fill="#d97706"/>
+  <path d="M56 216c12-36 44-56 72-56s60 20 72 56" fill="#b45309"/>
+  <text x="128" y="232" text-anchor="middle" font-size="20" font-family="Arial" fill="#451a03">Dr Omar</text>
+</svg>

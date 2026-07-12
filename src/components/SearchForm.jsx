@@ -25,10 +25,10 @@ export default function SearchForm({ isLoggedIn, setShowPopup, className = "sear
           onChange={(e) => setSpecialist(e.target.value)}
         >
           <option value="">All Specialists</option>
-          <option>General Practitioner</option>
+          <option>General Practice</option>
           <option>Dentist</option>
-          <option>Cardiologist</option>
-          <option>Dermatologist</option>
+          <option>Cardiology</option>
+          <option>Dermatology</option>
         </select>
       </div>
 

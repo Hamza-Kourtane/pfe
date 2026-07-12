@@ -770,3 +770,106 @@ main {
   flex-direction: column;
   align-items: center;
 }
+
+/* Status colors for appointment details */
+.status-pending {
+  color: #f59e0b;
+}
+
+.status-accepted {
+  color: #059669;
+}
+
+.status-rejected {
+  color: #dc2626;
+}
+
+.status-completed {
+  color: #2563eb;
+}
+
+.status-missed {
+  color: #dc2626;
+}
+
+.status-cancelled {
+  color: #6b7280;
+}
+
+/* Logged out state in appointment section */
+.appointment-login-prompt,
+.appointment-loading,
+.appointment-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 20px;
+  color: #6b7280;
+  text-align: center;
+}
+
+.appointment-login-prompt .create-btn,
+.appointment-empty .create-btn {
+  margin-top: 8px;
+}
+
+/* Cancel confirmation popup */
+.cancel-popup {
+  max-width: 380px;
+  text-align: center;
+}
+
+.cancel-icon {
+  color: #dc2626;
+}
+
+.cancel-popup h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #1f2937;
+}
+
+.cancel-popup p {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.cancel-popup-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.cancel-yes-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  background: #dc2626;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.cancel-yes-btn:hover {
+  background: #b91c1c;
+}
+
+.cancel-no-btn {
+  padding: 10px 24px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  color: #374151;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.cancel-no-btn:hover {
+  background: #f9fafb;
+}

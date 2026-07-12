@@ -13,6 +13,8 @@ const Register = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -57,11 +59,34 @@ const Register = () => {
 
       setSuccessMessage(`Account created for ${data.user.email}. You can log in now.`);
       localStorage.setItem('loggedIn', 'true');
+      localStorage.setItem(
+        'user',
+        JSON.stringify({
+          id: data.user.id,
+          email: data.user.email,
+          fullname: data.user.fullname || fullname,
+        })
+      );
       setFullname("");
       setEmail("");
       setPassword("");
       setIdCard("");
       setPhoneNumber("");
+      // If user selected an avatar, upload it now
+      if (avatarFile && data.user && data.user.id) {
+        try {
+          const fd = new FormData();
+          fd.append('avatar', avatarFile);
+          const up = await fetch(`http://localhost:5000/auth/${data.user.id}/avatar`, {
+            method: 'POST',
+            body: fd,
+          });
+          // ignore response errors for now
+        } catch (e) {
+          console.warn('Avatar upload failed', e);
+        }
+      }
+
       navigate("/");
     } catch (error) {
       setErrorMessage(
@@ -90,7 +115,29 @@ const Register = () => {
         <form className="form" onSubmit={handleSubmit}>
           <h1>Create Account</h1>
 
-         <div className="group">
+<div className="group file-group">
+            <label htmlFor="avatar-upload" className="file-input-label">
+              Profile image (optional)
+            </label>
+            <input
+              id="avatar-upload"
+              type="file"
+              accept="image/*"
+              className="file-input"
+              onChange={(e) => {
+                const f = e.target.files[0];
+                setAvatarFile(f);
+                if (f) setAvatarPreview(URL.createObjectURL(f));
+              }}
+            />
+            {avatarPreview && (
+              <div className="avatar-preview-wrapper">
+                <img src={avatarPreview} alt="preview" className="avatar-preview" />
+              </div>
+            )}
+          </div>
+
+          <div className="group">
             <input
               required
               type="text"
@@ -102,7 +149,7 @@ const Register = () => {
             <span className="highlight"></span>
             <span className="bar"></span>
             <label htmlFor="register-fullname">Full Name</label>
-        </div>
+          </div>
 
          <div className="group">
   <input

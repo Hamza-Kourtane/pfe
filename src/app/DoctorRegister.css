@@ -236,7 +236,50 @@ body {
   width: 20px;
   height: 20px;
 }
+.file-group {
+  display: grid;
+  gap: 10px;
+}
 
+.file-input-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.file-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  font-size: 0.95rem;
+  font-family: 'Poppins', sans-serif;
+  color: #111827;
+  cursor: pointer;
+}
+
+.file-input:hover {
+  border-color: #5da2b4;
+}
+
+.file-input:focus {
+  outline: none;
+  border-color: #5DA2B4;
+  box-shadow: 0 0 0 3px rgba(93, 162, 180, 0.18);
+}
+
+.avatar-preview-wrapper {
+  margin-top: 8px;
+}
+
+.avatar-preview {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 1px solid #d1d5db;
+}
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .doctor-container {

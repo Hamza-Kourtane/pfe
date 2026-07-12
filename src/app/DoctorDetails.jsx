@@ -13,6 +13,10 @@ import {
   Calendar,
   Loader2,
 } from "lucide-react";
+import doctorImage1 from "../assets/online-doctor-in-a-transparent-coat-with-a-stethoscope-demonstrating-professionalism-and-care-file-no-background-online-doctor-and-medical-service-free-png.webp";
+import doctorImage2 from "../assets/png-clipart-physician-doctor-of-medicine-patient-health-care-doctor-electronics-microphone.png";
+import doctorImage3 from "../assets/pngtree-confident-male-doctor-smiling-and-ready-to-assist-png-image_15259346.png";
+import doctorImage4 from "../assets/pngtree-young-afro-professional-doctor-png-image_13227671.png";
 
 import "./DoctorDetails.css";
 
@@ -52,8 +56,16 @@ const DoctorDetails = () => {
     }
   }
 
+  // Accept `fullname` sent from other components
+  if (doctor && !doctor.name && doctor.fullname) {
+    doctor.name = doctor.fullname;
+  }
+
   // Controls whether booking modal is open or closed
   const [showModal, setShowModal] = useState(false);
+
+  // Toggle showing map when clicking doctor's image
+  const [showMap, setShowMap] = useState(false);
 
   // Selected appointment date
   const [selectedDate, setSelectedDate] = useState("");
@@ -79,7 +91,7 @@ const DoctorDetails = () => {
   const [successInfo, setSuccessInfo] = useState(null);
 
   // If no doctor data exists
-  if (!doctor || !doctor.name) {
+  if (!doctor || !(doctor.name || doctor.fullname)) {
     return (
       <div className="doctor-details-page">
         <div
@@ -212,6 +224,25 @@ const DoctorDetails = () => {
     }
   };
 
+  const seededImages = {
+    'dr salma benali': doctorImage1,
+    'dr karim el mansouri': doctorImage2,
+    'dr leila haddad': doctorImage3,
+    'dr omar ziani': doctorImage4,
+    'dr sana el amrani': doctorImage1,
+  };
+
+  const getDoctorImage = () => {
+    const name = `${doctor.name || ''} ${doctor.fullname || ''}`.trim().toLowerCase();
+    if (doctor.image) return doctor.image;
+    if (seededImages[name]) return seededImages[name];
+    return doctorImage1;
+  };
+
+  const handleDoctorImageError = (event) => {
+    event.currentTarget.src = doctorImage1;
+  };
+
   // Convert rating to number
   const rating = Number(doctor.rating) || 0;
 
@@ -233,11 +264,11 @@ const DoctorDetails = () => {
         <div className="doctor-details-image">
 
           <img
-            src={
-              doctor.image ||
-              "https://via.placeholder.com/400x400?text=Doctor"
-            }
-            alt={doctor.name}
+            src={getDoctorImage()}
+            alt={doctor.name || doctor.fullname}
+            onError={handleDoctorImageError}
+            onClick={() => setShowMap((s) => !s)}
+            style={{ cursor: 'pointer' }}
           />
 
           {/* Available Badge */}
@@ -245,6 +276,26 @@ const DoctorDetails = () => {
             <CheckCircle2 size={16} />
             Available for booking
           </div>
+
+          {/* Small embedded map when image clicked */}
+          {showMap && (
+            <div className="doctor-map" style={{ marginTop: 12 }}>
+              <iframe
+                title="doctor-location"
+                src={
+                  doctor.lat && doctor.lng
+                    ? `https://www.google.com/maps?q=${doctor.lat},${doctor.lng}&output=embed`
+                    : `https://www.google.com/maps?q=${encodeURIComponent(
+                        doctor.location || ''
+                      )}&output=embed`
+                }
+                width="100%"
+                height="200"
+                style={{ border: 0 }}
+              />
+            </div>
+          )}
+          
         </div>
 
         {/* Doctor Details */}
@@ -353,7 +404,7 @@ const DoctorDetails = () => {
           {/* Book Appointment Button */}
           <button
             className="book-appointment-button"
-            onClick={openModal}
+            onClick={() => navigate('/booking', { state: doctor })}
           >
             <Calendar size={18} />
             Book Appointment

@@ -15,6 +15,8 @@
     const [experience, setExperience] = useState('');
     const [clinicAddress, setClinicAddress] = useState('');
     const [licenseNumber, setLicenseNumber] = useState('');
+    const [avatarFile, setAvatarFile] = useState(null);
+    const [avatarPreview, setAvatarPreview] = useState(null);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -45,6 +47,23 @@
 
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Registration failed');
+
+        if (avatarFile && data.doctor?.id) {
+          try {
+            const formData = new FormData();
+            formData.append('avatar', avatarFile);
+            const uploadRes = await fetch(`http://localhost:5000/doctors/${data.doctor.id}/avatar`, {
+              method: 'POST',
+              body: formData,
+            });
+            const uploadData = await uploadRes.json();
+            if (uploadRes.ok && uploadData.image) {
+              data.doctor.image = uploadData.image;
+            }
+          } catch (uploadError) {
+            console.warn('Doctor avatar upload failed', uploadError);
+          }
+        }
 
         navigate('/doctor-verification', { state: { user: data.user, doctor: data.doctor } });
       } catch (err) {
@@ -116,6 +135,32 @@
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                 />
+              </div>
+
+              <div className="form-group file-group full-width">
+                <label htmlFor="doctor-avatar-upload" className="file-input-label">
+                  Profile image (optional)
+                </label>
+                <input
+                  id="doctor-avatar-upload"
+                  type="file"
+                  accept="image/*"
+                  className="file-input"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] ?? null;
+                    setAvatarFile(file);
+                    setAvatarPreview(file ? URL.createObjectURL(file) : null);
+                  }}
+                />
+                {avatarPreview && (
+                  <div className="avatar-preview-wrapper">
+                    <img
+                      src={avatarPreview}
+                      alt="Preview"
+                      className="avatar-preview"
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="form-group">

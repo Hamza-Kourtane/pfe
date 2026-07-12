@@ -1,21 +1,33 @@
 import express from "express";
+import path from "path";
+import fs from "fs";
 import cors from "cors";
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
 import pool from "./db.js";
 import doctorRoutes from "./routes/doctors.js";
+import appointmentRoutes from "./routes/appointments.js";
+import aiRoutes from "./routes/ai.js";
+
+dotenv.config();
+
+const uploadsDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "uploads");
+fs.mkdirSync(uploadsDir, { recursive: true });
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 app.use("/doctors", doctorRoutes);
 app.use("/auth", authRoutes);
-
+app.use("/appointments", appointmentRoutes);
+app.use("/ai", aiRoutes);
 app.get("/", (req, res) => {
   res.send("API running...");
 });
 
 const initDb = async () => {
+  // Create users table if it doesn't exist
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
@@ -30,6 +42,15 @@ const initDb = async () => {
     )
   `);
 
+  // Add fullname column to users if it doesn't exist
+  // (needed for patient registration)
+  try {
+    await pool.query(`ALTER TABLE users ADD COLUMN fullname VARCHAR(255)`);
+    await pool.query(`ALTER TABLE users ADD COLUMN image TEXT`);
+  } catch (e) {
+    // Column already exists, ignore error
+  }
+
   // Create doctors table if it doesn't exist
   await pool.query(`
     CREATE TABLE IF NOT EXISTS doctors (
@@ -41,6 +62,41 @@ const initDb = async () => {
       rating INT,
       lat DOUBLE PRECISION,
       lng DOUBLE PRECISION
+    )
+  `);
+
+  // Add missing columns to doctors table (needed for doctor registration)
+  const doctorColumns = [
+    "ADD COLUMN IF NOT EXISTS image TEXT",
+    "ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id)",
+    "ADD COLUMN IF NOT EXISTS fullname TEXT",
+    "ADD COLUMN IF NOT EXISTS phone TEXT",
+    "ADD COLUMN IF NOT EXISTS clinic_address TEXT",
+    "ADD COLUMN IF NOT EXISTS license_number TEXT",
+    "ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'pending'",
+  ];
+  for (const col of doctorColumns) {
+    try {
+      await pool.query(`ALTER TABLE doctors ${col}`);
+    } catch (e) {
+      // Column may already exist in older PG versions, ignore
+    }
+  }
+
+  // Create appointments table if it doesn't exist
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS appointments (
+      id SERIAL PRIMARY KEY,
+      doctor_id INT REFERENCES doctors(id),
+      patient_id INT REFERENCES users(id),
+      patient_name VARCHAR(255),
+      patient_email VARCHAR(255),
+      patient_phone VARCHAR(50),
+      appointment_date DATE,
+      appointment_time VARCHAR(20),
+      reason TEXT,
+      status VARCHAR(20) DEFAULT 'pending',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
 
@@ -66,6 +122,11 @@ const initDb = async () => {
 
 initDb()
   .then(() => {
+    // Serve uploaded images
+    app.use(
+      "/uploads",
+      express.static(uploadsDir)
+    );
     app.listen(5000, () => {
       console.log("Server running on port 5000");
     });
