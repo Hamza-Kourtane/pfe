@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./AIChatbot.css";
 
 function AIChatbot() {
+  const navigate = useNavigate();
 
   // Opens and closes the chatbot
   const [isOpen, setIsOpen] = useState(false);
@@ -10,76 +12,93 @@ function AIChatbot() {
   const [messages, setMessages] = useState([
     {
       sender: "ai",
-      text: "Hello 👋 Tell me what you're feeling."
+      text: "Hello 👋 Tell me what you're feeling and I can recommend a doctor.",
+      doctors: []
     }
   ]);
 
   // Stores what the user is typing
   const [input, setInput] = useState("");
 
-  // Runs when the Send button is clicked
-  // Runs when the Send button is clicked
-const sendMessage = async () => {
+  // Loading state while waiting for reply
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Don't send empty messages
-  if (input.trim() === "") return;
+  // Auto-scroll to the latest message
+  const chatEndRef = useRef(null);
 
-  // Save the user's message before clearing the input
-  const userMessage = input;
-
-  // Show the user's message immediately
-  setMessages(currentMessages => [
-    ...currentMessages,
-    {
-      sender: "user",
-      text: userMessage
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  ]);
+  }, [messages, isLoading]);
 
-  // Clear the input
-  setInput("");
+  // Opens doctor details page when a doctor card is clicked
+  const handleDoctorClick = (doctor) => {
+    // Save doctor data so DoctorDetails can use it
+    sessionStorage.setItem("selectedDoctor", JSON.stringify(doctor));
+    navigate("/doctor");
+  };
 
-  try {
+  // Runs when the Send button is clicked
+  const sendMessage = async () => {
 
-    // Send the message to your backend
-    const response = await fetch("http://localhost:5000/ai/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        message: userMessage
-      })
-    });
+    // Don't send empty messages
+    if (input.trim() === "") return;
 
-    // Convert the backend response to JSON
-    const data = await response.json();
+    // Save the user's message before clearing the input
+    const userMessage = input;
 
-    // Add Gemini's reply to the chat
-    setMessages(currentMessages => [
-      ...currentMessages,
-      {
-        sender: "ai",
-        text: data.reply || data.error || "Sorry, I couldn't answer right now."
-      }
+    // Show the user's message immediately
+    setMessages(current => [
+      ...current,
+      { sender: "user", text: userMessage, doctors: [] }
     ]);
 
-  } catch (error) {
+    // Clear the input
+    setInput("");
 
-    console.error(error);
+    // Show loading indicator
+    setIsLoading(true);
 
-    // If something goes wrong
-    setMessages(currentMessages => [
-      ...currentMessages,
-      {
-        sender: "ai",
-        text: "Sorry, I couldn't answer right now."
-      }
-    ]);
+    try {
 
-  }
+      // Send the message to backend
+      const response = await fetch("http://localhost:5000/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage })
+      });
 
-};
+      const data = await response.json();
+
+      // Add AI's reply to the chat
+      setMessages(current => [
+        ...current,
+        {
+          sender: "ai",
+          text: data.reply || "Sorry, I couldn't answer right now.",
+          doctors: data.doctors || []
+        }
+      ]);
+
+    } catch (error) {
+
+      console.error(error);
+
+      setMessages(current => [
+        ...current,
+        {
+          sender: "ai",
+          text: "Sorry, I couldn't answer right now.",
+          doctors: []
+        }
+      ]);
+
+    } finally {
+      setIsLoading(false);
+    }
+
+  };
 
   return (
     <>
@@ -97,24 +116,64 @@ const sendMessage = async () => {
 
           {/* Header */}
           <div className="chat-header">
-            Doctori AI
+            <span>🤖 Doctori AI</span>
+            <button className="chat-close" onClick={() => setIsOpen(false)}>✕</button>
           </div>
 
           {/* Messages */}
           <div className="chat-body">
 
             {messages.map((message, index) => (
-              <div
-                key={index}
-                className={
-                  message.sender === "ai"
-                    ? "ai-message"
-                    : "user-message"
-                }
-              >
-                {message.text}
+              <div key={index}>
+
+                {/* Message bubble */}
+                <div
+                  className={
+                    message.sender === "ai"
+                      ? "ai-message"
+                      : "user-message"
+                  }
+                >
+                  {message.text}
+                </div>
+
+                {/* Doctor cards shown below AI messages */}
+                {message.sender === "ai" && message.doctors && message.doctors.length > 0 && (
+                  <div className="doctor-recommendations">
+                    <p className="recommend-title">Here are doctors you can book:</p>
+                    {message.doctors.map((doc) => (
+                      <div
+                        key={doc.id}
+                        className="recommend-doctor-card"
+                        onClick={() => handleDoctorClick(doc)}
+                      >
+                        <div className="rec-avatar">
+                          {doc.name ? doc.name.charAt(0).toUpperCase() : "D"}
+                        </div>
+                        <div className="rec-info">
+                          <p className="rec-name">Dr. {doc.name}</p>
+                          <p className="rec-spec">{doc.specialty}</p>
+                          <p className="rec-loc">{doc.location || "Location not set"}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
               </div>
             ))}
+
+            {/* Loading dots */}
+            {isLoading && (
+              <div className="loading-dots">
+                <span className="dot"></span>
+                <span className="dot"></span>
+                <span className="dot"></span>
+              </div>
+            )}
+
+            {/* Auto-scroll anchor */}
+            <div ref={chatEndRef} />
 
           </div>
 
@@ -133,7 +192,7 @@ const sendMessage = async () => {
               }}
             />
 
-            <button onClick={sendMessage}>
+            <button onClick={sendMessage} disabled={isLoading}>
               Send
             </button>
 
