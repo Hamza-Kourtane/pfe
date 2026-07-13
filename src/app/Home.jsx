@@ -289,16 +289,25 @@ export default function Home() {
               </button>
             </>
           ) : (
-            <button
-              className="login-btn"
-              onClick={handleLogout}
-            >
-              <span>Logout</span>
-              <svg width="15px" height="10px" viewBox="0 0 13 10">
-                <path d="M1,5 L11,5"></path>
-                <polyline points="8 1 12 5 8 9"></polyline>
-              </svg>
-            </button>
+            <>
+              <div className="user-info">
+                <span className="user-name">{user?.fullname || user?.email || "User"}</span>
+                <span className="user-points">
+                  <span className="points-icon">●</span>
+                  {user?.points ?? "—"} pts
+                </span>
+              </div>
+              <button
+                className="login-btn"
+                onClick={handleLogout}
+              >
+                <span>Logout</span>
+                <svg width="15px" height="10px" viewBox="0 0 13 10">
+                  <path d="M1,5 L11,5"></path>
+                  <polyline points="8 1 12 5 8 9"></polyline>
+                </svg>
+              </button>
+            </>
           )}
         </div>
       </header>

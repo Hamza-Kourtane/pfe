@@ -41,6 +41,41 @@ body,
   gap: 12px;
 }
 
+/* User info in header (name + points) */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px;
+  background: rgba(93, 162, 180, 0.1);
+  border-radius: 10px;
+  border: 1px solid rgba(93, 162, 180, 0.2);
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  font-family: 'Poppins', sans-serif;
+  white-space: nowrap;
+}
+
+.user-points {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5DA2B4;
+  font-family: 'Poppins', sans-serif;
+  white-space: nowrap;
+}
+
+.points-icon {
+  font-size: 8px;
+  color: #5DA2B4;
+}
+
 /* LOGO */
 .logo {
   margin-left: 50px;
