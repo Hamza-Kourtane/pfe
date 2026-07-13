@@ -163,18 +163,24 @@ export default function Home() {
     try {
       setIsSubmittingReview(true);
 
+      // Use patient_id from appointment data, fallback to user.id
+      const patientId = reviewAppointment.patient_id || user?.id;
+
       const response = await fetch("http://localhost:5000/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           appointment_id: reviewAppointment.id,
           doctor_id: reviewAppointment.doctor_id,
-          patient_id: user.id,
+          patient_id: patientId,
           rating: selectedRating,
         }),
       });
 
-      if (!response.ok) throw new Error("Could not save review");
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || "Could not save review");
+      }
 
       setReviewSuccess(true);
 
@@ -187,7 +193,7 @@ export default function Home() {
 
     } catch (error) {
       console.error("Review error:", error);
-      alert("Could not save your rating. Please try again.");
+      alert(error.message || "Could not save your rating. Please try again.");
     } finally {
       setIsSubmittingReview(false);
     }
