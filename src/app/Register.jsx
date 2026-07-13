@@ -58,36 +58,14 @@ const Register = () => {
       }
 
       setSuccessMessage(`Account created for ${data.user.email}. You can log in now.`);
-      localStorage.setItem('loggedIn', 'true');
-      localStorage.setItem(
-        'user',
-        JSON.stringify({
-          id: data.user.id,
-          email: data.user.email,
-          fullname: data.user.fullname || fullname,
-        })
-      );
       setFullname("");
       setEmail("");
       setPassword("");
       setIdCard("");
       setPhoneNumber("");
-      // If user selected an avatar, upload it now
-      if (avatarFile && data.user && data.user.id) {
-        try {
-          const fd = new FormData();
-          fd.append('avatar', avatarFile);
-          const up = await fetch(`http://localhost:5000/auth/${data.user.id}/avatar`, {
-            method: 'POST',
-            body: fd,
-          });
-          // ignore response errors for now
-        } catch (e) {
-          console.warn('Avatar upload failed', e);
-        }
-      }
 
-      navigate("/");
+      // Navigate to login page so user can log in manually
+      navigate("/login");
     } catch (error) {
       setErrorMessage(
         error instanceof Error

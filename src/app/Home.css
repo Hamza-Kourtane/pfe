@@ -931,6 +931,7 @@ main {
 .rating-actions {
   display: flex;
   justify-content: center;
+  gap: 12px;
 }
 
 .rating-submit-btn {
@@ -957,6 +958,25 @@ main {
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+.rating-skip-btn {
+  padding: 12px 24px;
+  border: 2px solid #d1d5db;
+  border-radius: 12px;
+  background: white;
+  color: #6b7280;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.rating-skip-btn:hover {
+  border-color: #9ca3af;
+  color: #374151;
+  background: #f9fafb;
 }
 
 /* Thank you content */

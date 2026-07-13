@@ -199,6 +199,20 @@ export default function Home() {
     }
   };
 
+  // Close the rating popup and mark appointment as reviewed to not show again
+  const closeReviewPopup = () => {
+    if (reviewAppointment) {
+      setAppointments((prev) =>
+        prev.map((a) =>
+          a.id === reviewAppointment.id ? { ...a, reviewed: true } : a
+        )
+      );
+    }
+    setReviewAppointment(null);
+    setReviewSuccess(false);
+    setSelectedRating(0);
+  };
+
   // Format date nicely
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
@@ -497,7 +511,7 @@ export default function Home() {
       {/* STAR RATING POPUP        */}
       {/* ========================= */}
       {reviewAppointment && !reviewSuccess && (
-        <div className="popup-overlay">
+        <div className="popup-overlay" onClick={() => closeReviewPopup()}>
           <div className="popup rating-popup" onClick={(e) => e.stopPropagation()}>
             <h3>Rate Your Experience</h3>
             <p className="rating-subtitle">
@@ -537,6 +551,12 @@ export default function Home() {
                 disabled={selectedRating === 0 || isSubmittingReview}
               >
                 {isSubmittingReview ? "Submitting..." : "Submit Rating"}
+              </button>
+              <button
+                className="rating-skip-btn"
+                onClick={closeReviewPopup}
+              >
+                Skip
               </button>
             </div>
           </div>
