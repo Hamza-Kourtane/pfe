@@ -9,6 +9,7 @@ import pool from "./db.js";
 import doctorRoutes from "./routes/doctors.js";
 import appointmentRoutes from "./routes/appointments.js";
 import aiRoutes from "./routes/ai.js";
+import reviewRoutes from "./routes/reviews.js";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use("/doctors", doctorRoutes);
 app.use("/auth", authRoutes);
 app.use("/appointments", appointmentRoutes);
 app.use("/ai", aiRoutes);
+app.use("/reviews", reviewRoutes);
 app.get("/", (req, res) => {
   res.send("API running...");
 });
@@ -96,6 +98,24 @@ const initDb = async () => {
       appointment_time VARCHAR(20),
       reason TEXT,
       status VARCHAR(20) DEFAULT 'pending',
+      reviewed BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Add reviewed column if missing
+  try {
+    await pool.query(`ALTER TABLE appointments ADD COLUMN reviewed BOOLEAN DEFAULT FALSE`);
+  } catch (e) { /* already exists */ }
+
+  // Create reviews table
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS reviews (
+      id SERIAL PRIMARY KEY,
+      appointment_id INT UNIQUE REFERENCES appointments(id),
+      doctor_id INT REFERENCES doctors(id),
+      patient_id INT REFERENCES users(id),
+      rating INT CHECK (rating >= 1 AND rating <= 5),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);

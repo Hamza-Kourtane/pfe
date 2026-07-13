@@ -22,6 +22,7 @@ import {
   User,
   AlertTriangle,
   XCircle,
+  Star,
 } from "lucide-react";
 import SearchForm from "../components/SearchForm";
 import AIChatbot from "./AIChatbot";
@@ -51,6 +52,13 @@ export default function Home() {
 
   // State for cancel confirmation modal
   const [cancelModal, setCancelModal] = useState(null); // stores the appointment to cancel
+
+  // State for star rating popup
+  const [reviewAppointment, setReviewAppointment] = useState(null);
+  const [selectedRating, setSelectedRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [reviewSuccess, setReviewSuccess] = useState(false);
 
   const [specialist, setSpecialist] = useState("");
   const [location, setLocation] = useState("");
@@ -102,6 +110,19 @@ export default function Home() {
     loadAppointments();
   }, [user]);
 
+  // Show rating popup when a completed unreviewed appointment is found
+  useEffect(() => {
+    // Find the first completed appointment that hasn't been reviewed
+    const unreviewed = appointments.find(
+      (a) => a.status === "completed" && !a.reviewed
+    );
+    if (unreviewed) {
+      setReviewAppointment(unreviewed);
+      setSelectedRating(0);
+      setReviewSuccess(false);
+    }
+  }, [appointments]);
+
   const handleLogout = () => {
     localStorage.removeItem("loggedIn");
     localStorage.removeItem("user");
@@ -132,6 +153,43 @@ export default function Home() {
     } catch (error) {
       console.error("Cancel error:", error);
       alert("Could not cancel appointment. Please try again.");
+    }
+  };
+
+  // Submit star rating for a completed appointment
+  const handleSubmitReview = async () => {
+    if (selectedRating === 0 || !reviewAppointment || !user) return;
+
+    try {
+      setIsSubmittingReview(true);
+
+      const response = await fetch("http://localhost:5000/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          appointment_id: reviewAppointment.id,
+          doctor_id: reviewAppointment.doctor_id,
+          patient_id: user.id,
+          rating: selectedRating,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Could not save review");
+
+      setReviewSuccess(true);
+
+      // Mark the appointment as reviewed locally
+      setAppointments((prev) =>
+        prev.map((a) =>
+          a.id === reviewAppointment.id ? { ...a, reviewed: true } : a
+        )
+      );
+
+    } catch (error) {
+      console.error("Review error:", error);
+      alert("Could not save your rating. Please try again.");
+    } finally {
+      setIsSubmittingReview(false);
     }
   };
 
@@ -427,6 +485,75 @@ export default function Home() {
           </div>
         </div>
         
+      )}
+
+      {/* ========================= */}
+      {/* STAR RATING POPUP        */}
+      {/* ========================= */}
+      {reviewAppointment && !reviewSuccess && (
+        <div className="popup-overlay">
+          <div className="popup rating-popup" onClick={(e) => e.stopPropagation()}>
+            <h3>Rate Your Experience</h3>
+            <p className="rating-subtitle">
+              How was your visit with <strong>{reviewAppointment.doctor_name || "the doctor"}</strong>?
+            </p>
+
+            {/* Stars */}
+            <div className="stars-container">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  size={40}
+                  className={`rating-star ${
+                    star <= (hoverRating || selectedRating) ? "filled" : ""
+                  }`}
+                  onClick={() => setSelectedRating(star)}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
+                />
+              ))}
+            </div>
+
+            {selectedRating > 0 && (
+              <p className="rating-label">
+                {selectedRating === 1 && "Poor"}
+                {selectedRating === 2 && "Fair"}
+                {selectedRating === 3 && "Good"}
+                {selectedRating === 4 && "Very Good"}
+                {selectedRating === 5 && "Excellent"}
+              </p>
+            )}
+
+            <div className="rating-actions">
+              <button
+                className="rating-submit-btn"
+                onClick={handleSubmitReview}
+                disabled={selectedRating === 0 || isSubmittingReview}
+              >
+                {isSubmittingReview ? "Submitting..." : "Submit Rating"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Thank you popup after rating */}
+      {reviewAppointment && reviewSuccess && (
+        <div className="popup-overlay">
+          <div className="popup rating-popup" onClick={(e) => e.stopPropagation()}>
+            <div className="thank-you-content">
+              <BadgeCheck size={56} className="thank-icon" />
+              <h3>Thank You!</h3>
+              <p>Your rating has been submitted successfully.</p>
+              <button
+                className="rating-submit-btn"
+                onClick={() => setReviewAppointment(null)}
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       <AIChatbot />
