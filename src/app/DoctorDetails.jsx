@@ -135,9 +135,13 @@ const DoctorDetails = () => {
   const validateForm = () => {
     const errors = {};
 
-    // Date must be selected and not in the past
+    // Date must be selected, match YYYY-MM-DD format, and not be in the past
     if (!selectedDate) {
       errors.date = "Please select a date.";
+    } else if (!/^\d{4}-\d{2}-\d{2}$/.test(selectedDate)) {
+      errors.date = "Please enter a valid date (numbers only).";
+    } else if (isNaN(Date.parse(selectedDate))) {
+      errors.date = "Please enter a valid date.";
     } else if (selectedDate < today) {
       errors.date = "Date cannot be in the past.";
     }
