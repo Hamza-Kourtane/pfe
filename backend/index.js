@@ -22,6 +22,9 @@ app.use("/doctors", doctorRoutes);
 app.use("/auth", authRoutes);
 app.use("/appointments", appointmentRoutes);
 app.use("/ai", aiRoutes);
+app.get("/reviews", (req, res) => {
+  res.json({ message: "Reviews API is running" });
+});
 app.post("/reviews", async (req, res) => {
   try {
     const { appointment_id, doctor_id, patient_id, rating } = req.body;
