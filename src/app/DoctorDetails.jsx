@@ -87,6 +87,9 @@ const DoctorDetails = () => {
   // Error message
   const [errorMessage, setErrorMessage] = useState("");
 
+  // Validation errors per field
+  const [fieldErrors, setFieldErrors] = useState({});
+
   // Stores success information after booking
   const [successInfo, setSuccessInfo] = useState(null);
 
@@ -128,11 +131,66 @@ const DoctorDetails = () => {
     });
   };
 
+  // Validate all form fields for booking
+  const validateForm = () => {
+    const errors = {};
+
+    // Date must be selected and not in the past
+    if (!selectedDate) {
+      errors.date = "Please select a date.";
+    } else if (selectedDate < today) {
+      errors.date = "Date cannot be in the past.";
+    }
+
+    // Time must be selected
+    if (!selectedTime) {
+      errors.time = "Please select a time slot.";
+    }
+
+    // Name: letters only, at least 2 characters
+    const nameTrimmed = form.name.trim();
+    if (!nameTrimmed) {
+      errors.name = "Full name is required.";
+    } else if (nameTrimmed.length < 2) {
+      errors.name = "Name must be at least 2 characters.";
+    } else if (!/^[A-Za-zÀ-ÿ\s'-]+$/.test(nameTrimmed)) {
+      errors.name = "Name should only contain letters.";
+    }
+
+    // Email: valid format
+    if (!form.email.trim()) {
+      errors.email = "Email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      errors.email = "Please enter a valid email address.";
+    }
+
+    // Phone: digits only if provided, 10-15 digits
+    const phoneTrimmed = form.phone.trim();
+    if (phoneTrimmed && !/^\d+$/.test(phoneTrimmed)) {
+      errors.phone = "Phone should only contain digits.";
+    } else if (phoneTrimmed && (phoneTrimmed.length < 10 || phoneTrimmed.length > 15)) {
+      errors.phone = "Phone must be between 10 and 15 digits.";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // Clear a field error when user starts typing
+  const clearFieldError = (field) => {
+    setFieldErrors((prev) => {
+      const copy = { ...prev };
+      delete copy[field];
+      return copy;
+    });
+  };
+
   // Open booking modal
   const openModal = () => {
     // Clear previous messages
     setErrorMessage("");
     setSuccessInfo(null);
+    setFieldErrors({});
 
     // Reset form
     setSelectedDate("");
@@ -162,17 +220,8 @@ const DoctorDetails = () => {
 
     setErrorMessage("");
 
-    // Check date and time
-    if (!selectedDate || !selectedTime) {
-      setErrorMessage("Please choose a date and a time slot.");
-      return;
-    }
-
-    // Check required fields
-    if (!form.name || !form.email) {
-      setErrorMessage("Please fill in your name and email.");
-      return;
-    }
+    // Run validation before submitting
+    if (!validateForm()) return;
 
     try {
       setIsSubmitting(true);
@@ -507,12 +556,15 @@ const DoctorDetails = () => {
                 value={selectedDate}
 
                 /* Save selected date in state */
-                onChange={(e) =>
-                  setSelectedDate(e.target.value)
-                }
+                onChange={(e) => {
+                  setSelectedDate(e.target.value);
+                  clearFieldError("date");
+                }}
 
+                className={fieldErrors.date ? "input-error" : ""}
                 required
               />
+              {fieldErrors.date && <span className="field-error">{fieldErrors.date}</span>}
             </div>
 
             {/* Time slots section */}
@@ -525,9 +577,11 @@ const DoctorDetails = () => {
               <select
                 id="time"
                 value={selectedTime}
-                onChange={(e) =>
-                  setSelectedTime(e.target.value)
-                }
+                onChange={(e) => {
+                  setSelectedTime(e.target.value);
+                  clearFieldError("time");
+                }}
+                className={fieldErrors.time ? "input-error" : ""}
                 required
               >
                 <option value="">
@@ -541,6 +595,7 @@ const DoctorDetails = () => {
                   </option>
                 ))}
               </select>
+              {fieldErrors.time && <span className="field-error">{fieldErrors.time}</span>}
 
             </div>
 
@@ -563,10 +618,15 @@ const DoctorDetails = () => {
                 value={form.name}
 
                 /* Update form state */
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  clearFieldError("name");
+                }}
 
+                className={fieldErrors.name ? "input-error" : ""}
                 required
               />
+              {fieldErrors.name && <span className="field-error">{fieldErrors.name}</span>}
 
             </div>
 
@@ -591,10 +651,15 @@ const DoctorDetails = () => {
 
                   value={form.email}
 
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e);
+                    clearFieldError("email");
+                  }}
 
+                  className={fieldErrors.email ? "input-error" : ""}
                   required
                 />
+                {fieldErrors.email && <span className="field-error">{fieldErrors.email}</span>}
 
               </div>
 
@@ -616,8 +681,14 @@ const DoctorDetails = () => {
 
                   value={form.phone}
 
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e);
+                    clearFieldError("phone");
+                  }}
+
+                  className={fieldErrors.phone ? "input-error" : ""}
                 />
+                {fieldErrors.phone && <span className="field-error">{fieldErrors.phone}</span>}
 
               </div>
 

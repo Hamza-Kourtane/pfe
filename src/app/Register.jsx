@@ -16,6 +16,8 @@ const Register = () => {
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  // Validation errors per field
+  const [fieldErrors, setFieldErrors] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,15 +26,73 @@ const Register = () => {
     }
   }, [navigate]);
 
+  // Validate all form fields and return true if valid
+  const validateForm = () => {
+    const errors = {};
+
+    // Full name: letters and spaces only, at least 2 characters
+    const nameTrimmed = fullname.trim();
+    if (!nameTrimmed) {
+      errors.fullname = "Full name is required.";
+    } else if (nameTrimmed.length < 2) {
+      errors.fullname = "Name must be at least 2 characters.";
+    } else if (!/^[A-Za-zÀ-ÿ\s'-]+$/.test(nameTrimmed)) {
+      errors.fullname = "Name should only contain letters.";
+    }
+
+    // Email: basic email format
+    if (!email.trim()) {
+      errors.email = "Email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      errors.email = "Please enter a valid email address.";
+    }
+
+    // Password: at least 6 characters
+    if (!password) {
+      errors.password = "Password is required.";
+    } else if (password.length < 6) {
+      errors.password = "Password must be at least 6 characters.";
+    }
+
+    // ID Card: alphanumeric, at least 3 characters
+    if (!idCard.trim()) {
+      errors.idCard = "ID Card is required.";
+    } else if (idCard.trim().length < 3) {
+      errors.idCard = "ID Card must be at least 3 characters.";
+    } else if (!/^[A-Za-z0-9\-/]+$/.test(idCard.trim())) {
+      errors.idCard = "ID Card should only contain letters, numbers, dashes or slashes.";
+    }
+
+    // Phone: digits only, 10-15 digits
+    const phoneTrimmed = phoneNumber.trim();
+    if (!phoneTrimmed) {
+      errors.phoneNumber = "Phone number is required.";
+    } else if (!/^\d+$/.test(phoneTrimmed)) {
+      errors.phoneNumber = "Phone number should only contain digits.";
+    } else if (phoneTrimmed.length < 10 || phoneTrimmed.length > 15) {
+      errors.phoneNumber = "Phone number must be between 10 and 15 digits.";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // Clear a field error when user starts typing
+  const clearFieldError = (field) => {
+    setFieldErrors((prev) => {
+      const copy = { ...prev };
+      delete copy[field];
+      return copy;
+    });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setSuccessMessage("");
     setErrorMessage("");
 
-    if (!email || !password) {
-      setErrorMessage("Email and password are required.");
-      return;
-    }
+    // Run validation before submitting
+    if (!validateForm()) return;
 
     try {
       setIsLoading(true);
@@ -119,28 +179,30 @@ const Register = () => {
             <input
               required
               type="text"
-              className="input"
+              className={`input ${fieldErrors.fullname ? "input-error" : ""}`}
               id="register-fullname"
               value={fullname}
-              onChange={(event) => setFullname(event.target.value)}
+              onChange={(e) => { setFullname(e.target.value); clearFieldError("fullname"); }}
             />
             <span className="highlight"></span>
             <span className="bar"></span>
             <label htmlFor="register-fullname">Full Name</label>
+            {fieldErrors.fullname && <span className="field-error">{fieldErrors.fullname}</span>}
           </div>
 
          <div className="group">
   <input
     required
     type="email"
-    className="input"
+    className={`input ${fieldErrors.email ? "input-error" : ""}`}
     id="register-email"
     value={email}
-    onChange={(e) => setEmail(e.target.value)}
+    onChange={(e) => { setEmail(e.target.value); clearFieldError("email"); }}
   />
   <span className="highlight"></span>
   <span className="bar"></span>
   <label htmlFor="register-email">Email</label>
+  {fieldErrors.email && <span className="field-error">{fieldErrors.email}</span>}
 </div>
 
 <div className="group">
@@ -148,10 +210,10 @@ const Register = () => {
     <input
       required
       type={showPassword ? "text" : "password"}
-      className="input"
+      className={`input ${fieldErrors.password ? "input-error" : ""}`}
       id="register-password"
       value={password}
-      onChange={(e) => setPassword(e.target.value)}
+      onChange={(e) => { setPassword(e.target.value); clearFieldError("password"); }}
     />
     <button
       type="button"
@@ -166,34 +228,37 @@ const Register = () => {
   <span className="highlight"></span>
   <span className="bar"></span>
   <label htmlFor="register-password">Password</label>
+  {fieldErrors.password && <span className="field-error">{fieldErrors.password}</span>}
 </div>
 
 <div className="group">
   <input
     required
     type="text"
-    className="input"
+    className={`input ${fieldErrors.idCard ? "input-error" : ""}`}
     id="register-id-card"
     value={idCard}
-    onChange={(e) => setIdCard(e.target.value)}
+    onChange={(e) => { setIdCard(e.target.value); clearFieldError("idCard"); }}
   />
   <span className="highlight"></span>
   <span className="bar"></span>
   <label htmlFor="register-id-card">ID Card</label>
+  {fieldErrors.idCard && <span className="field-error">{fieldErrors.idCard}</span>}
 </div>
 
 <div className="group">
   <input
     required
     type="text"
-    className="input"
+    className={`input ${fieldErrors.phoneNumber ? "input-error" : ""}`}
     id="register-phone-number"
     value={phoneNumber}
-    onChange={(e) => setPhoneNumber(e.target.value)}
+    onChange={(e) => { setPhoneNumber(e.target.value.replace(/\D/g, "")); clearFieldError("phoneNumber"); }}
   />
   <span className="highlight"></span>
   <span className="bar"></span>
   <label htmlFor="register-phone-number">Phone Number</label>
+  {fieldErrors.phoneNumber && <span className="field-error">{fieldErrors.phoneNumber}</span>}
 </div>
           <button type="submit" className="main-btn" disabled={isLoading}>
             {isLoading ? "Creating account..." : "Create account"}

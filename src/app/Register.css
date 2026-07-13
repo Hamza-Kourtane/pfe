@@ -301,6 +301,29 @@ label {
   background: rgba(0, 0, 0, 0.05);
 }
 
+/* =========================
+   FORM VALIDATION
+========================= */
+.field-error {
+  display: block;
+  color: #e53e3e;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+input.input-error, select.input-error, textarea.input-error,
+.input.input-error {
+  border-color: #e53e3e !important;
+  box-shadow: 0 0 0 1px #e53e3e !important;
+}
+
+input.input-error:focus, select.input-error:focus, textarea.input-error:focus,
+.input.input-error:focus {
+  border-color: #c53030 !important;
+  box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.2) !important;
+}
+
 @media (max-width: 900px) {
   .auth-page {
     overflow: auto;
