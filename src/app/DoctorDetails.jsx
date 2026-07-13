@@ -518,38 +518,29 @@ const DoctorDetails = () => {
             {/* Time slots section */}
             <div className="form-row">
 
-              <label>
+              <label htmlFor="time">
                 Time slot
               </label>
 
-              <div className="time-slots">
+              <select
+                id="time"
+                value={selectedTime}
+                onChange={(e) =>
+                  setSelectedTime(e.target.value)
+                }
+                required
+              >
+                <option value="">
+                  -- Select a time --
+                </option>
 
-                {/* Create buttons from TIME_SLOTS array */}
+                {/* Create options from TIME_SLOTS array */}
                 {TIME_SLOTS.map((slot) => (
-
-                  <button
-                    type="button"
-
-                    key={slot}
-
-                    /* Add "selected" class when active */
-                    className={`time-slot ${
-                      selectedTime === slot
-                        ? "selected"
-                        : ""
-                    }`}
-
-                    /* Save selected time */
-                    onClick={() =>
-                      setSelectedTime(slot)
-                    }
-                  >
+                  <option key={slot} value={slot}>
                     {slot}
-                  </button>
-
+                  </option>
                 ))}
-
-              </div>
+              </select>
 
             </div>
 

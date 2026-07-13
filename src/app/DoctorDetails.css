@@ -345,36 +345,30 @@
   color: #b0bcc6;
 }
 
-.time-slots {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.time-slot {
+.form-row select {
   border: 1.5px solid #e0e6ec;
-  background: #f8fafb;
   border-radius: 12px;
-  padding: 12px 8px;
-  font-size: 13px;
-  font-weight: 500;
+  padding: 12px 16px;
+  font-size: 14px;
   font-family: 'Poppins', sans-serif;
-  color: #374151;
-  cursor: pointer;
+  color: #1f2937;
+  background: #f8fafb;
   transition: all 0.25s ease;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
 }
 
-.time-slot:hover {
+.form-row select:focus {
+  outline: none;
   border-color: #5DA2B4;
-  background: #eef7fa;
-}
-
-.time-slot.selected {
-  background: #5DA2B4;
-  border-color: #5DA2B4;
-  color: white;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(93, 162, 180, 0.3);
+  background-color: white;
+  box-shadow: 0 0 0 4px rgba(93, 162, 180, 0.12);
 }
 
 .form-error {
@@ -477,7 +471,7 @@
     grid-template-columns: 1fr;
   }
 
-  .time-slots {
-    grid-template-columns: repeat(2, 1fr);
+  .form-row select {
+    font-size: 13px;
   }
 }
